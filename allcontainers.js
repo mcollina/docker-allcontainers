@@ -64,6 +64,8 @@ function allContainers (opts) {
   return result
 }
 
+module.exports = allContainers
+
 if (require.main === module) {
   (function() {
     var ee = allContainers()
