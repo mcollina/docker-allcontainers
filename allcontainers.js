@@ -56,7 +56,7 @@ function allContainers (opts) {
         result.emit('start', {
           id: container.Id,
           image: container.Image
-        }, docker.getContainer(container.id))
+        }, docker.getContainer(container.Id))
       })
     })
   }
