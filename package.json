@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/mcollina/docker-allcontainers",
   "dependencies": {
-    "dockerode": "git+ssh://git@github.com:mcollina/dockerode.git",
+    "dockerode": "git+https://github.com/mcollina/dockerode.git",
     "never-ending-stream": "^1.1.1",
     "through2": "^0.6.3"
   }
