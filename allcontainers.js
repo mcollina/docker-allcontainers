@@ -13,6 +13,7 @@ function allContainers (opts) {
   var events = nes(function(cb) {
         docker.getEvents(cb)
       })
+  var names   = {}
 
   result.destroy = function() {
     events.destroy()
@@ -21,25 +22,48 @@ function allContainers (opts) {
   events.pipe(through(function(chunk, enc, cb) {
     var data = JSON.parse(chunk)
     var container = docker.getContainer(data.id)
-    var toEmit = {
-      id: data.id,
-      image: data.from
-    }
+    var tries = 0
 
-    // normalize the data format
-    data.Id = data.id
-    data.Image = data.from
+    function emitStart() {
+      if (++tries === 42) {
+        // let's just skip this container
+        // it means it started and died really fast
+        return
+      }
+
+      // weird hack because dockerode does not
+      // offer a way to fetch the name of our container
+      docker.listContainers(function(err, containers) {
+        if (err) {
+          return result.emit('error', err)
+        }
+
+        var current = containers.filter(function(container) {
+          return container.Id === data.id
+        })[0]
+
+        // we are polling the docker API really fast
+        if (!current) {
+          return setTimeout(emit, 20)
+        }
+
+        names[data.id] = current
+
+        result.emit('start', toEmit(names[data.id]), container)
+      })
+    }
 
     switch (data.status) {
       case 'start':
-        result.emit('start', toEmit, container)
-        break
+        emitStart()
+        break;
       case 'stop':
       case 'die':
-        result.emit('stop', toEmit, container)
+        result.emit('stop', toEmit(names[data.id]), container)
+        delete names[data.id]
         break
       default:
-        // do nothing, really
+      // do nothing, really
     }
 
     cb()
@@ -53,15 +77,22 @@ function allContainers (opts) {
       }
 
       containers.forEach(function(container) {
-        result.emit('start', {
-          id: container.Id,
-          image: container.Image
-        }, docker.getContainer(container.Id))
+        names[container.Id] = container
+        result.emit('start', toEmit(container),
+                    docker.getContainer(container.Id))
       })
     })
   }
 
   return result
+
+  function toEmit(container) {
+    return {
+      id: container.Id,
+      image: container.Image,
+      name: container.Names[0].replace(/^\//, '')
+    }
+  }
 }
 
 module.exports = allContainers
