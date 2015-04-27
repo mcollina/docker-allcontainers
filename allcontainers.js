@@ -56,11 +56,14 @@ function allContainers (opts) {
     switch (data.status) {
       case 'start':
         emitStart()
-        break;
+        break
       case 'stop':
       case 'die':
-        result.emit('stop', toEmit(names[data.id]), container)
-        delete names[data.id]
+        if (names[data.id]) {
+          // we need to know this container
+          result.emit('stop', toEmit(names[data.id]), container)
+          delete names[data.id]
+        }  // otherwise we already emitted stop
         break
       default:
       // do nothing, really
