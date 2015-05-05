@@ -27,5 +27,8 @@
     "dockerode": "^2.0.6",
     "never-ending-stream": "^1.1.1",
     "through2": "^0.6.3"
+  },
+  "devDependencies": {
+    "minimist": "^1.1.1"
   }
 }
