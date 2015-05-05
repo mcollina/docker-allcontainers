@@ -1,6 +1,6 @@
 {
   "name": "docker-allcontainers",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Get notified when a new container is started or stopped",
   "main": "allcontainers.js",
   "bin": "allcontainers.js",
