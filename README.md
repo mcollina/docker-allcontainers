@@ -15,6 +15,10 @@ var allContainer = require('docker-allcontainers')
 var ee = allContainers({
   preheat: true, // emit starts event for all already running containers
   docker: null, // options to Dockerode
+  matchByName: /hello/, // optional
+  matchByImage: /matteocollina/, //optional
+  skipByName: /.*pasteur.*/, //optional
+  skipByImage: /.*dockerfile.*/ //optional
 })
 ee.on('start', function(meta, container) {
   // container is a Dockerode Container
