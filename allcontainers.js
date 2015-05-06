@@ -49,7 +49,7 @@ function allContainers (opts) {
 
         // we are polling the docker API really fast
         if (!current) {
-          return setTimeout(emit, 20)
+          return setTimeout(start, 20)
         }
 
         emit(current)
