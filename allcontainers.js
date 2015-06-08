@@ -56,17 +56,33 @@ function allContainers (opts) {
       })
     }
 
+    function emitStop() {
+      result.emit('stop', toEmit(names[data.id]), container)
+      delete names[data.id]
+    }
+
     switch (data.status) {
+      case 'restore':
       case 'start':
         start()
         break
       case 'stop':
       case 'die':
+        // we need to know this container
+        // otherwise we already emitted stop
         if (names[data.id]) {
-          // we need to know this container
-          result.emit('stop', toEmit(names[data.id]), container)
-          delete names[data.id]
-        }  // otherwise we already emitted stop
+          emitStop()
+        }
+        break
+      case 'checkpoint':
+        // there's no way to actually know if the container is alive or not without inspecting...
+        if (names[data.id]) {
+          container.inspect(function(err, info) {
+            if (!info.State.Running) {
+              emitStop()
+            }
+          })
+        }
         break
       default:
       // do nothing, really
