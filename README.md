@@ -5,7 +5,7 @@ Get notified when a new container is started or stopped
 ## Install
 
 ```bash
-npm install docker-loghose --save
+npm install docker-allcontainers --save
 ```
 
 ## Usage
