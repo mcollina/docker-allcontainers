@@ -18,6 +18,7 @@ function allContainers (opts) {
   var matchByImage = toRegExp(opts.matchByImage)
   var skipByImage = toRegExp(opts.skipByImage)
   var skipByName = toRegExp(opts.skipByName)
+  var pausedPreheatContainers = {};
 
   result.destroy = function() {
     events.destroy()
@@ -62,6 +63,12 @@ function allContainers (opts) {
     }
 
     switch (data.status) {
+      case 'unpause':
+        if (pausedPreheatContainers[data.id]) {
+          delete pausedPreheatContainers[data.id];
+          start();
+        }
+        break;
       case 'restore':
       case 'start':
         start()
@@ -98,7 +105,17 @@ function allContainers (opts) {
         return result.emit('error', err)
       }
 
-      containers.forEach(emit)
+      var activeContainers = [];
+      function findPausedContainers(container) {
+        if (container.Status.indexOf("Paused") !== -1) {
+          pausedPreheatContainers[container.Id] = container;
+        } else {
+          activeContainers.push(container);
+        }
+      }
+
+      containers.forEach(findPausedContainers)
+      activeContainers.forEach(emit)
     })
   }
 
