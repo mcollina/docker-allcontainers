@@ -25,6 +25,7 @@
   "homepage": "https://github.com/mcollina/docker-allcontainers",
   "dependencies": {
     "dockerode": "^2.0.6",
+    "fast-json-parse": "^1.0.2",
     "never-ending-stream": "^1.1.1",
     "through2": "^0.6.3"
   },

@@ -3,6 +3,7 @@
 var nes = require('never-ending-stream')
 var Docker = require('dockerode')
 var through = require('through2')
+var fastJsonParse = require('fast-json-parse')
 var EE = require('events').EventEmitter
 
 function allContainers (opts) {
@@ -26,10 +27,12 @@ function allContainers (opts) {
 
   events.pipe(through(function(chunk, enc, cb) {
     var data = null
-    try { 
-      data = JSON.parse(chunk)
-    } catch (parseErr) {
-      return result.emit('error', parseErr)
+    var parsed = fastJsonParse(chunk)
+    if (parsed.err) {
+      // TODO: parse multiple lines?
+      return 
+    } else {
+      data = parsed.value
     }
     var container = docker.getContainer(data.id)
     var tries = 0
