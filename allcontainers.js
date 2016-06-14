@@ -29,7 +29,7 @@ function allContainers (opts) {
     try { 
       data = JSON.parse(chunk)
     } catch (parseErr) {
-      return
+      return result.emit('error', parseErr)
     }
     var container = docker.getContainer(data.id)
     var tries = 0
