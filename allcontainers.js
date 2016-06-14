@@ -25,7 +25,12 @@ function allContainers (opts) {
   }
 
   events.pipe(through(function(chunk, enc, cb) {
-    var data = JSON.parse(chunk)
+    var data = null
+    try { 
+      data = JSON.parse(chunk)
+    } catch (parseErr) {
+      return
+    }
     var container = docker.getContainer(data.id)
     var tries = 0
 
