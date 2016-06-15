@@ -9,7 +9,7 @@ var EE = require('events').EventEmitter
 function parseJson (chunk) {
   var parsed = fastJsonParse(chunk)
   if (parsed.err) {
-    return {}
+    return null
   } else {
     return parsed.value
   } 
@@ -35,7 +35,6 @@ function allContainers (opts) {
     events.destroy()
   }
   
-  // pipe(through
   events.pipe(split).on('data', function(data) {
     var container = docker.getContainer(data.id)
     var tries = 0
