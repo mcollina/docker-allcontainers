@@ -9,7 +9,7 @@ var EE = require('events').EventEmitter
 function parseJson (chunk) {
   var parsed = fastJsonParse(chunk)
   if (parsed.err) {
-    return null
+    return undefined
   } else {
     return parsed.value
   } 
