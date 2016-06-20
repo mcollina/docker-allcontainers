@@ -1,15 +1,26 @@
 #! /usr/bin/env node
-
+'use strict'
 var nes = require('never-ending-stream')
 var Docker = require('dockerode')
 var through = require('through2')
+var fastJsonParse = require('fast-json-parse')
 var EE = require('events').EventEmitter
 
+function parseJson (chunk) {
+  var parsed = fastJsonParse(chunk)
+  if (parsed.err) {
+    return undefined
+  } else {
+    return parsed.value
+  } 
+}
 function allContainers (opts) {
   opts = opts || {}
 
   var docker = new Docker(opts.docker)
   var result = new EE()
+  var Split = require('split')
+  var split = Split(parseJson)
   var events = nes(function(cb) {
     docker.getEvents(cb)
   })
@@ -23,9 +34,8 @@ function allContainers (opts) {
   result.destroy = function() {
     events.destroy()
   }
-
-  events.pipe(through(function(chunk, enc, cb) {
-    var data = JSON.parse(chunk)
+  
+  events.pipe(split).on('data', function(data) {
     var container = docker.getContainer(data.id)
     var tries = 0
 
@@ -94,9 +104,7 @@ function allContainers (opts) {
       default:
       // do nothing, really
     }
-
-    cb()
-  }))
+  })
 
   // preheat is the default
   if (opts.preheat !== false) {
