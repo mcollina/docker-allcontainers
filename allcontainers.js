@@ -162,7 +162,8 @@ function allContainers (opts) {
     return {
       id: container.Id,
       image: container.Image,
-      name: container.Names[0].replace(/^\//, '')
+      name: container.Names[0].replace(/^\//, ''),
+      label: container.label
     }
   }
 }
