@@ -24,11 +24,11 @@
   },
   "homepage": "https://github.com/mcollina/docker-allcontainers",
   "dependencies": {
-    "dockerode": "^2.0.6",
+    "dockerode": "^2.4.3",
     "fast-json-parse": "^1.0.2",
-    "never-ending-stream": "^1.1.1",
-    "split2": "^2.1.0",
-    "through2": "^0.6.3"
+    "never-ending-stream": "^2.0.0",
+    "split2": "^2.1.1",
+    "through2": "^2.0.3"
   },
   "devDependencies": {
     "minimist": "^1.1.1"
