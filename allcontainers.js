@@ -163,7 +163,7 @@ function allContainers (opts) {
       id: container.Id,
       image: container.Image,
       name: container.Names[0].replace(/^\//, ''),
-      label: container.label
+      labels: container.Labels
     }
   }
 }
