@@ -180,16 +180,22 @@ function toRegExp(obj) {
   return new RegExp(obj)
 }
 
+function ifRegex(value) {
+  var result = /^\/(.*)\/$/.exec(value);
+  return  result ? new RegExp(result[1]) : value;
+}
+
 module.exports = allContainers
+
 
 if (require.main === module) {
   (function() {
     var argv = require('minimist')(process.argv.slice(2))
     var ee = allContainers({
-      matchByName: argv.matchByName,
-      matchByImage: argv.matchByImage,
-      skipByName: argv.skipByName,
-      skipByImage: argv.skipByImage
+      matchByName: ifRegex(argv.matchByName),
+      matchByImage: ifRegex(argv.matchByImage),
+      skipByName: ifRegex(argv.skipByName),
+      skipByImage: ifRegex(argv.skipByImage)
     })
     ee.on('start', function(container) {
       console.log('started', container)
