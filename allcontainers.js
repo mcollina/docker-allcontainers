@@ -85,8 +85,6 @@ function allContainers (opts) {
         start()
         break
       case 'stop':
-      case 'kill':
-      case 'destroy':
       case 'die':
         // we need to know this container
         // otherwise we already emitted stop
